@@ -1,13 +1,10 @@
 #include <mbed.h>
-#include <FastPWM.h>
 
-FastPWM m1(PA_10);
-RawSerial pc(USBTX,USBRX,230400);
+RawSerial pc(USBTX,USBRX,1000000);
 
 int  main(){
-      m1.period_us(2);
-
       while(1) {
-            
+            pc.printf("hello world\r\n");
+            wait(100);
       }
 }

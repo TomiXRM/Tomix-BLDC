@@ -12,11 +12,11 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/.pio/build/nucleo_f446re/firmware.elf",
-            "projectEnvName": "nucleo_f446re",
+            "executable": "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/.pio/build/nucleo_f303k8/firmware.elf",
+            "projectEnvName": "nucleo_f303k8",
             "toolchainBinDir": "/Users/tomixrm/.platformio/packages/toolchain-gccarmnoneeabi/bin",
             "internalConsoleOptions": "openOnSessionStart",
-            "svdPath": "/Users/tomixrm/.platformio/platforms/ststm32/misc/svd/STM32F446x.svd",
+            "svdPath": "/Users/tomixrm/.platformio/platforms/ststm32/misc/svd/STM32F30x.svd",
             "preLaunchTask": {
                 "type": "PlatformIO",
                 "task": "Pre-Debug"
@@ -26,21 +26,21 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/.pio/build/nucleo_f446re/firmware.elf",
-            "projectEnvName": "nucleo_f446re",
+            "executable": "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/.pio/build/nucleo_f303k8/firmware.elf",
+            "projectEnvName": "nucleo_f303k8",
             "toolchainBinDir": "/Users/tomixrm/.platformio/packages/toolchain-gccarmnoneeabi/bin",
             "internalConsoleOptions": "openOnSessionStart",
-            "svdPath": "/Users/tomixrm/.platformio/platforms/ststm32/misc/svd/STM32F446x.svd"
+            "svdPath": "/Users/tomixrm/.platformio/platforms/ststm32/misc/svd/STM32F30x.svd"
         },
         {
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (without uploading)",
-            "executable": "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/.pio/build/nucleo_f446re/firmware.elf",
-            "projectEnvName": "nucleo_f446re",
+            "executable": "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/.pio/build/nucleo_f303k8/firmware.elf",
+            "projectEnvName": "nucleo_f303k8",
             "toolchainBinDir": "/Users/tomixrm/.platformio/packages/toolchain-gccarmnoneeabi/bin",
             "internalConsoleOptions": "openOnSessionStart",
-            "svdPath": "/Users/tomixrm/.platformio/platforms/ststm32/misc/svd/STM32F446x.svd",
+            "svdPath": "/Users/tomixrm/.platformio/platforms/ststm32/misc/svd/STM32F30x.svd",
             "loadMode": "manual"
         }
     ]
