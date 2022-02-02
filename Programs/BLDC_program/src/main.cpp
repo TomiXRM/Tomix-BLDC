@@ -6,10 +6,8 @@ InterruptIn Hall2(D12);
 
 RawSerial pc(USBTX,USBRX,1000000);
 bool hallState[3];
-
-int16_t state,statePrev;
+uint8_t state,statePrev,hallStateAsBit;;
 int16_t count,degree;
-uint8_t hallStateAsBit;
 
 void hallHandle(){
       hallState[0] = Hall1.read();
