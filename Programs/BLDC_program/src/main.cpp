@@ -45,7 +45,7 @@ void hallHandle(){
       }
       degree = (count*75)%3600;
       statePrev = state;
-      pc.printf(" %d count:%d\t degree:%d\r\n",state,count,degree);
+      // pc.printf(" %d count:%d\t degree:%d\r\n",state,count,degree);
 }
 
 int  main(){
@@ -67,7 +67,14 @@ int  main(){
             pwmU.write(0.5*sin32_T(theta)+0.5);
             pwmV.write(0.5*sin32_T(theta+120)+0.5);
             pwmW.write(0.5*sin32_T(theta-120)+0.5);
+<<<<<<< feature/magnetEncoder
             theta ++;
             // wait_ms(1);
+=======
+            theta++;
+            wait_ms(1);
+>>>>>>> 三角関数テーブルを追加
       }
+
 }
+
