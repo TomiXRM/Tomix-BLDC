@@ -10,6 +10,7 @@
             "includePath": [
                 "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/include",
                 "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/src",
+                "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/lib/fastPWM",
                 "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509/cmsis/TARGET_CORTEX_M",
                 "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509",
                 "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/.pio/build/nucleo_f303k8",
@@ -25,7 +26,7 @@
                 "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303x8/TARGET_NUCLEO_F303K8",
                 "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303x8/device",
                 "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509/targets/TARGET_STM/TARGET_STM32F3/device",
-                "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/lib/fastPWM",
+                "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/lib/MySinCosTable",
                 "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509/features/unsupported/dsp",
                 "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/features/unsupported/dsp",
                 "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509/features/unsupported/dsp/cmsis_dsp",
@@ -58,6 +59,7 @@
                 "path": [
                     "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/include",
                     "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/src",
+                    "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/lib/fastPWM",
                     "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509/cmsis/TARGET_CORTEX_M",
                     "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509",
                     "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/.pio/build/nucleo_f303k8",
@@ -73,7 +75,7 @@
                     "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303x8/TARGET_NUCLEO_F303K8",
                     "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303x8/device",
                     "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509/targets/TARGET_STM/TARGET_STM32F3/device",
-                    "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/lib/fastPWM",
+                    "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/lib/MySinCosTable",
                     "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509/features/unsupported/dsp",
                     "/Users/tomixrm/Documents/Dev/BLDC/Programs/BLDC_program/features/unsupported/dsp",
                     "/Users/tomixrm/.platformio/packages/framework-mbed@5.51203.190509/features/unsupported/dsp/cmsis_dsp",
