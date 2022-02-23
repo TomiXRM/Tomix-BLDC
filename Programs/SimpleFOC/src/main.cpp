@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include "mbed.h"
 #include <AS5048A.h>
 #include "TrigonometricTable.h"
@@ -23,3 +24,38 @@ int main() {
             wait_ms(1);
       }
 }
+=======
+#include <Arduino.h>
+#include <SimpleFOC.h>
+
+// MagneticSensorSPI(int cs, float _cpr, int _angle_register)
+// config           - SPI config
+//  cs              - SPI chip select pin
+MagneticSensorSPI sensor = MagneticSensorSPI(AS5048_SPI, PA15);
+
+// these are valid pins (mosi, miso, sclk) for 2nd SPI bus on storm32 board (stm32f107rc)
+SPIClass SPI_2(D11, D12, D13);
+
+void setup() {
+      // monitoring port
+      Serial.begin(1000000);
+
+      // initialise magnetic sensor hardware
+      sensor.init(&SPI_2);
+
+      Serial.println("Sensor ready");
+      _delay(1000);
+}
+
+void loop() {
+      // iterative function updating the sensor internal variables
+      // it is usually called in motor.loopFOC()
+      // this function reads the sensor hardware and
+      // has to be called before getAngle nad getVelocity
+      sensor.update();
+      // display the angle and the angular velocity to the terminal
+      Serial.print(sensor.getAngle());
+      Serial.print("\t");
+      Serial.println(sensor.getVelocity());
+}
+>>>>>>> parent of 296145a... FOCで回してみるやつをやってみた
