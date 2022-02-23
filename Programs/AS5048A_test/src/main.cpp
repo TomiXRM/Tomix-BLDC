@@ -23,9 +23,14 @@ int main() {
             // wait_ms(1);
             i++;
             timer.reset();
-            s = (int)(sin32_T(i)*1000);
-            c = (int)(cos32_T(i)*1000);
-            timeT = timer.read_us();
-            pc.printf("%d,%d,%d\r\n",s,c,timeT);
+            int angle = *sensor.read_angle();
+            if(sensor.parity_check(angle)) {
+                  int degrees = As5048Spi::degrees(angle)/100;
+                  timeT = timer.read_us();
+                  pc.printf("%i,%d\r\n",degrees,timeT);
+            }else{
+                  pc.printf("Parity check failed.\r\n");
+            }
+            wait_ms(1);
       }
 }
