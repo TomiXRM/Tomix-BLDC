@@ -8,7 +8,7 @@
 As5048Spi sensor(D11, D12, D13, D10);
 RawSerial pc(USBTX, USBRX,2000000); // tx, rx
 FastPWM pwm[3] = {PC_7, PB_4, PB_10};
-AnalogIn AN[2] = {A0,A1};
+AnalogIn AN[2] = {A0,A2};
 DigitalOut bEnable(D8);
 Timer timer;
 
@@ -28,6 +28,15 @@ struct PhaseCurrent_s {
       float c;
 };
 
+PhaseCurrent_s current;
+DQCurrent_s dqCurrent;
+float volts_to_amps_ratio = 1.0f /0.01 / 50;         // volts to amps
+// gains for each phase
+float gain_a,gain_b;
+float offset_ia,offset_ib;
+
+
+
 
 int16_t degBetween_signed(int16_t deg1,int16_t deg2){
       int16_t a = deg1 - deg2;
@@ -37,34 +46,39 @@ int16_t degBetween_signed(int16_t deg1,int16_t deg2){
 }
 
 
-// void getFOCCurrents(float angle_el){
-//       // read current phase currents
-//       PhaseCurrent_s current = getPhaseCurrents();
+void CurrentSense_init(){
+      offset_ia = 0; offset_ib = 0;
+      for (size_t i = 0; i < 1000; i++) {
+            offset_ia += AN[0].read();
+            offset_ib += AN[1].read();
+      }
+      offset_ia = offset_ia / 1000;
+      offset_ib = offset_ib / 1000;
+      pc.printf("offset_ia: %d offset_ib: %d\r\n",(int)(offset_ia*1000),(int)(offset_ib*1000));
+      gain_a = volts_to_amps_ratio;
+      gain_b = volts_to_amps_ratio;
+      gain_b *= -1;
+}
+DQCurrent_s getFOCCurrents(float angle_el){
+      // read current phase currents
+      current.a = 3.3*(AN[0].read() - offset_ia)*gain_a;
+      current.b = 3.3*(AN[1].read() - offset_ib)*gain_b;
 
-//       // calculate clarke transform
-//       float i_alpha, i_beta;
-//       if(!current.c) {
-//             // if only two measured currents
-//             i_alpha = current.a;
-//             i_beta = _1_SQRT3 * current.a + _2_SQRT3 * current.b;
-//       } else {
-//             // signal filtering using identity a + b + c = 0. Assumes measurement error is normally distributed.
-//             float mid = (1.f/3) * (current.a + current.b + current.c);
-//             float a = current.a - mid;
-//             float b = current.b - mid;
-//             i_alpha = a;
-//             i_beta = _1_SQRT3 * a + _2_SQRT3 * b;
-//       }
+      // calculate clarke transform
+      float i_alpha = current.a;
+      float i_beta = (current.a + 2*current.b)/1.73205;
 
-//       // calculate park transform
-//       float ct = _cos(angle_el);
-//       float st = _sin(angle_el);
-//       DQCurrent_s return_current;
-//       return_current.d = i_alpha * ct + i_beta * st;
-//       return_current.q = i_beta * ct - i_alpha * st;
-//       return return_current;
+      // // calculate park transform
+      float ct = cos32_T(angle_el);
+      float st = cos32_T(angle_el);
 
-// }
+      DQCurrent_s return_current;
+      return_current.d = i_alpha * ct + i_beta * st;
+      return_current.q = i_beta * ct - i_alpha * st;
+      return return_current;
+
+}
+
 int16_t readAngle(){
       int angle = *sensor.read_angle();
       if(sensor.parity_check(angle)) {
@@ -93,12 +107,12 @@ float power = 0.45;
 int8_t carrea(){
       if(timer.read_ms() > 50) {
             turnPluse += turnAmout;
-            if (turnPluse <= 0 || turnPluse >= 40) {
+            if (turnPluse <= 0 || turnPluse >=40) {
                   turnAmout = -turnAmout;
             }
             timer.reset();
       }
-      power = 0.3;
+      power = 0.35;
       return turnPluse;
 }
 
@@ -111,11 +125,11 @@ void setup(){
       pwm[2].period_us(5);
 
       bEnable = 1;
+      CurrentSense_init();
       timer.reset();
 }
 
 
-uint16_t Current[2];
 int main() {
       setup();
       while(1) {
@@ -129,7 +143,7 @@ int main() {
                   shaftAngle = degBetween_signed(readAngle(),elAngleZero);
                   elAngle = (polePair*shaftAngle)%360;
                   elAngle = (elAngle < 0) ? 360 + elAngle : elAngle;
-                  Current[0] = AN[0].read_u16()/65.535; Current[1] = AN[1].read_u16()/65.535;
+                  dqCurrent = getFOCCurrents(elAngle);
 
                   pwm[0].write(power*sin32_T(theta)+0.5);
                   pwm[1].write(power*sin32_T(theta+120)+0.5);
@@ -137,7 +151,10 @@ int main() {
 
                   elAnglePrev = elAngle;
                   diff = theta - elAngle;
-                  pc.printf("shaftAngle:%d ,elAngle:%d ,theta:%d ,diff:%d ,A0:%d ,A1:%d\r\n",shaftAngle,elAngle,theta,diff,Current[0],Current[1]);
+                  diff = (diff < 0) ? 360 + diff : diff;
+                  pc.printf("shaftAngle:%d ,elAngle:%d ,theta:%d ,diff:%d ",shaftAngle,elAngle,theta,diff);
+                  pc.printf("A0:%d,A1:%d,Id:%d,Iq:%d\r\n",(int)(current.a*1000),(int)(current.b*1000),(int)(dqCurrent.d*1000),(int)(dqCurrent.q*1000));
+                  wait_us(10);
             }
       }
 }
