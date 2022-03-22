@@ -33,8 +33,8 @@ float volts_to_amps_ratio = 1.0f / 0.01 / 50; // volts to amps
 float gain_a, gain_b;
 float offset_ia, offset_ib;
 
-int16_t amout = 0;
-
+int16_t amout = 210;
+void console();
 int16_t degBetween_signed(int16_t deg1, int16_t deg2) {
     int16_t a = deg1 - deg2;
     while (a < 0)
@@ -105,22 +105,22 @@ int turnAmout = 1;
 float power = 0.45;
 
 void turnChange() {
-    amout += 1;
-    //     amout = -90;
-    //     if (amout == 0) {
-    //         amout = 180;
-    //     } else {
-    //         amout = 0;
-    //     }
+    amout += turnAmout;
+    if (amout <= 200 || amout >= 340) {
+        turnAmout = -turnAmout;
+    }
+    turnAmout++;
+    //     amout = 270 + 60 * sin32_T(turnAmout);
+    console();
 }
 
 void setup() {
     timer.start();
     sensor.frequency(8000000);
 
-    pwm[0].period_us(5);
-    pwm[1].period_us(5);
-    pwm[2].period_us(5);
+    pwm[0].period_us(20);
+    pwm[1].period_us(20);
+    pwm[2].period_us(20);
 
     bEnable = 1;
     CurrentSense_init();
@@ -128,7 +128,15 @@ void setup() {
 
     turnChangeT.attach(turnChange, 0.01);
 }
-
+void console() {
+    // pc.printf("shaftAngle:%d ,elAngle:%d ,theta:%d ,diff:%d ",
+    //           shaftAngle, elAngle, theta, diff);
+    // pc.printf("A0:%d,A1:%d", (int)(current.a * 1000),
+    //           (int)(current.b * 1000));
+    // pc.printf("Id:%d\tIq:%d\t", (int)(dqCurrent.d * 1000),
+    //           (int)(dqCurrent.q * 1000));
+    pc.printf("amout:%d\r\n", amout % 360);
+}
 int main() {
     setup();
     while (1) {
@@ -145,21 +153,15 @@ int main() {
             dqCurrent = getFOCCurrents(elAngle);
             theta = elAngle + amout; // 0:CW 180:CCw
 
-            pwm[0].write(power * sin32_T(theta) + 0.1);
-            pwm[1].write(power * sin32_T(theta + 120) + 0.1);
-            pwm[2].write(power * sin32_T(theta - 120) + 0.1);
+            pwm[0].write(power * sin32_T(theta) + 0.5);
+            pwm[1].write(power * sin32_T(theta + 120) + 0.5);
+            pwm[2].write(power * sin32_T(theta - 120) + 0.5);
 
             elAnglePrev = elAngle;
             diff = theta - elAngle;
             diff = (diff < 0) ? 360 + diff : diff;
 
-            // pc.printf("shaftAngle:%d ,elAngle:%d ,theta:%d ,diff:%d ",
-            //           shaftAngle, elAngle, theta, diff);
-            // pc.printf("A0:%d,A1:%d", (int)(current.a * 1000),
-            //           (int)(current.b * 1000));
-            pc.printf("Id:%d,Iq:%d\r\n", (int)(dqCurrent.d * 1000),
-                      (int)(dqCurrent.q * 1000));
-            // wait_us(10);
+            // wait_ms(1);
         }
     }
 }
