@@ -9,6 +9,7 @@ FastPWM pwm[3] = {PC_7, PB_4, PB_10};
 AnalogIn AN[2] = {A0, A2};
 DigitalOut bEnable(D8);
 Timer timer;
+Ticker turnChangeT;
 
 int timeT, theta, diff;
 uint8_t polePair = 8;
@@ -31,6 +32,8 @@ float volts_to_amps_ratio = 1.0f / 0.01 / 50; // volts to amps
 // gains for each phase
 float gain_a, gain_b;
 float offset_ia, offset_ib;
+
+int16_t amout = 0;
 
 int16_t degBetween_signed(int16_t deg1, int16_t deg2) {
     int16_t a = deg1 - deg2;
@@ -100,16 +103,15 @@ void setAngleZero() {
 int turnPluse = 0;
 int turnAmout = 1;
 float power = 0.45;
-int8_t carrea() {
-    if (timer.read_ms() > 50) {
-        turnPluse += turnAmout;
-        if (turnPluse <= 0 || turnPluse >= 40) {
-            turnAmout = -turnAmout;
-        }
-        timer.reset();
-    }
-    power = 0.35;
-    return turnPluse;
+
+void turnChange() {
+    amout += 1;
+    //     amout = -90;
+    //     if (amout == 0) {
+    //         amout = 180;
+    //     } else {
+    //         amout = 0;
+    //     }
 }
 
 void setup() {
@@ -123,6 +125,8 @@ void setup() {
     bEnable = 1;
     CurrentSense_init();
     timer.reset();
+
+    turnChangeT.attach(turnChange, 0.01);
 }
 
 int main() {
@@ -130,8 +134,6 @@ int main() {
     while (1) {
         setAngleZero();
         while (1) {
-            // 強制転流用の電気角theta(これでぶん回す)
-            // theta += carrea();
             theta = theta % 360;
             if (theta >= 360)
                 theta = 0;
@@ -141,22 +143,23 @@ int main() {
             elAngle = (polePair * shaftAngle) % 360;
             elAngle = (elAngle < 0) ? 360 + elAngle : elAngle;
             dqCurrent = getFOCCurrents(elAngle);
-            theta = elAngle; // 0:CW 180:CCw
+            theta = elAngle + amout; // 0:CW 180:CCw
 
-            pwm[0].write(power * sin32_T(theta) + 0.001);
-            pwm[1].write(power * sin32_T(theta + 120) + 0.001);
-            pwm[2].write(power * sin32_T(theta - 120) + 0.001);
+            pwm[0].write(power * sin32_T(theta) + 0.1);
+            pwm[1].write(power * sin32_T(theta + 120) + 0.1);
+            pwm[2].write(power * sin32_T(theta - 120) + 0.1);
 
             elAnglePrev = elAngle;
             diff = theta - elAngle;
             diff = (diff < 0) ? 360 + diff : diff;
 
-            pc.printf("shaftAngle:%d ,elAngle:%d ,theta:%d ,diff:%d ",
-                      shaftAngle, elAngle, theta, diff);
-            pc.printf("A0:%d,A1:%d,Id:%d,Iq:%d\r\n", (int)(current.a * 1000),
-                      (int)(current.b * 1000), (int)(dqCurrent.d * 1000),
+            // pc.printf("shaftAngle:%d ,elAngle:%d ,theta:%d ,diff:%d ",
+            //           shaftAngle, elAngle, theta, diff);
+            // pc.printf("A0:%d,A1:%d", (int)(current.a * 1000),
+            //           (int)(current.b * 1000));
+            pc.printf("Id:%d,Iq:%d\r\n", (int)(dqCurrent.d * 1000),
                       (int)(dqCurrent.q * 1000));
-            wait_us(10);
+            // wait_us(10);
         }
     }
 }
