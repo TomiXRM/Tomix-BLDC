@@ -1,30 +1,13 @@
-#include "FastPWM.h"
-#include "TrigonometricTable.h"
-#include "mbed.h"
-#include <AS5048A.h>
 
-As5048Spi sensor(D11, D12, D13, D10);
-RawSerial pc(USBTX, USBRX, 2000000); // tx, rx
-FastPWM pwm[3] = {PC_7, PB_4, PB_10};
-AnalogIn AN[2] = {A0, A2};
-DigitalOut bEnable(D8);
-Timer timer;
+#include "mbed.h"
+#include <setup.h>
+
 Ticker turnChangeT;
 
 int timeT, theta, diff;
-uint8_t polePair = 8;
+
 int shaftAngle;
 int elAngleZero, elAngle, elAnglePrev = 0;
-
-struct DQCurrent_s {
-    float d;
-    float q;
-};
-struct PhaseCurrent_s {
-    float a;
-    float b;
-    float c;
-};
 
 PhaseCurrent_s current;
 DQCurrent_s dqCurrent;
@@ -32,6 +15,9 @@ float volts_to_amps_ratio = 1.0f / 0.01 / 50; // volts to amps
 // gains for each phase
 float gain_a, gain_b;
 float offset_ia, offset_ib;
+
+int turnAmout = 1;
+float power = 0.45;
 
 int16_t amout = 210;
 void console();
@@ -100,10 +86,6 @@ void setAngleZero() {
     wait_ms(500);
 }
 
-int turnPluse = 0;
-int turnAmout = 1;
-float power = 0.45;
-
 void turnChange() {
     amout += turnAmout;
     if (amout <= 200 || amout >= 340) {
@@ -148,7 +130,7 @@ int main() {
 
             // 磁気エンコーダから観測された電気角
             shaftAngle = degBetween_signed(readAngle(), elAngleZero);
-            elAngle = (polePair * shaftAngle) % 360;
+            elAngle = (POLEPAIR * shaftAngle) % 360;
             elAngle = (elAngle < 0) ? 360 + elAngle : elAngle;
             dqCurrent = getFOCCurrents(elAngle);
             theta = elAngle + amout; // 0:CW 180:CCw
@@ -160,8 +142,6 @@ int main() {
             elAnglePrev = elAngle;
             diff = theta - elAngle;
             diff = (diff < 0) ? 360 + diff : diff;
-
-            // wait_ms(1);
         }
     }
 }
