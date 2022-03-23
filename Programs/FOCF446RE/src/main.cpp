@@ -21,30 +21,7 @@ float power = 0.45;
 
 int16_t amout = 210;
 void console();
-int16_t degBetween_signed(int16_t deg1, int16_t deg2) {
-    int16_t a = deg1 - deg2;
-    while (a < 0)
-        a += 360;
-    while (a > 180)
-        a -= 360;
-    return a;
-}
 
-void CurrentSense_init() {
-    offset_ia = 0;
-    offset_ib = 0;
-    for (size_t i = 0; i < 1000; i++) {
-        offset_ia += AN[0].read();
-        offset_ib += AN[1].read();
-    }
-    offset_ia = offset_ia / 1000;
-    offset_ib = offset_ib / 1000;
-    pc.printf("offset_ia: %d offset_ib: %d\r\n", (int)(offset_ia * 1000),
-              (int)(offset_ib * 1000));
-    gain_a = volts_to_amps_ratio;
-    gain_b = volts_to_amps_ratio;
-    gain_b *= -1;
-}
 DQCurrent_s getFOCCurrents(float angle_el) {
     // read current phase currents
     current.a = 3.3 * (AN[0].read() - offset_ia) * gain_a;
@@ -64,34 +41,12 @@ DQCurrent_s getFOCCurrents(float angle_el) {
     return return_current;
 }
 
-int16_t readAngle() {
-    int angle = *sensor.read_angle();
-    if (sensor.parity_check(angle)) {
-        int degrees = As5048Spi::degrees(angle) / 100;
-        // pc.printf("%i,%d\r\n",degrees,timeT);
-        return degrees;
-    } else {
-        pc.printf("Parity check failed.\r\n");
-    }
-    return -1;
-}
-
-void setAngleZero() {
-    pc.printf("setZero\r\n");
-    pwm[0].write(0.2);
-    wait_ms(500);
-    elAngleZero = readAngle();
-    pwm[0] = 0;
-    pc.printf("setZero:%d\r\n", elAngleZero);
-    wait_ms(500);
-}
-
 void turnChange() {
     amout += turnAmout;
     if (amout <= 200 || amout >= 340) {
         turnAmout = -turnAmout;
     }
-    turnAmout++;
+    //     turnAmout++;
     //     amout = 270 + 60 * sin32_T(turnAmout);
     console();
 }
@@ -113,10 +68,9 @@ void setup() {
 void console() {
     // pc.printf("shaftAngle:%d ,elAngle:%d ,theta:%d ,diff:%d ",
     //           shaftAngle, elAngle, theta, diff);
-    // pc.printf("A0:%d,A1:%d", (int)(current.a * 1000),
-    //           (int)(current.b * 1000));
-    // pc.printf("Id:%d\tIq:%d\t", (int)(dqCurrent.d * 1000),
-    //           (int)(dqCurrent.q * 1000));
+    pc.printf("A0:%d,A1:%d", (int)(current.a * 1000), (int)(current.b * 1000));
+    pc.printf("Id:%d\tIq:%d\t", (int)(dqCurrent.d * 1000),
+              (int)(dqCurrent.q * 1000));
     pc.printf("amout:%d\r\n", amout % 360);
 }
 int main() {
@@ -133,15 +87,15 @@ int main() {
             elAngle = (POLEPAIR * shaftAngle) % 360;
             elAngle = (elAngle < 0) ? 360 + elAngle : elAngle;
             dqCurrent = getFOCCurrents(elAngle);
-            theta = elAngle + amout; // 0:CW 180:CCw
-
-            pwm[0].write(power * sin32_T(theta) + 0.5);
-            pwm[1].write(power * sin32_T(theta + 120) + 0.5);
-            pwm[2].write(power * sin32_T(theta - 120) + 0.5);
+            theta = elAngle - 30; // + amout;
 
             elAnglePrev = elAngle;
             diff = theta - elAngle;
             diff = (diff < 0) ? 360 + diff : diff;
+            writePWM(power * sin32_T(theta) + 0.5,
+                     power * sin32_T(theta + 120) + 0.5,
+                     power * sin32_T(theta + 240) + 0.5);
+            // wait_ms(1);
         }
     }
 }
