@@ -10,6 +10,7 @@
             "includePath": [
                 "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/include",
                 "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/src",
+                "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/lib/setup",
                 "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/lib/AS5048A",
                 "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/lib/MySinCosTable",
                 "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/lib/fastPWM",
@@ -28,6 +29,7 @@
                 "/Users/tomixrm/.platformio/packages/framework-mbed/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE",
                 "/Users/tomixrm/.platformio/packages/framework-mbed/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/device",
                 "/Users/tomixrm/.platformio/packages/framework-mbed/targets/TARGET_STM/TARGET_STM32F4/device",
+                "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/lib/lowpass",
                 "/Users/tomixrm/.platformio/packages/framework-mbed/features/unsupported/dsp",
                 "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/features/unsupported/dsp",
                 "/Users/tomixrm/.platformio/packages/framework-mbed/features/unsupported/dsp/cmsis_dsp",
@@ -60,6 +62,7 @@
                 "path": [
                     "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/include",
                     "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/src",
+                    "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/lib/setup",
                     "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/lib/AS5048A",
                     "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/lib/MySinCosTable",
                     "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/lib/fastPWM",
@@ -78,6 +81,7 @@
                     "/Users/tomixrm/.platformio/packages/framework-mbed/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE",
                     "/Users/tomixrm/.platformio/packages/framework-mbed/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/device",
                     "/Users/tomixrm/.platformio/packages/framework-mbed/targets/TARGET_STM/TARGET_STM32F4/device",
+                    "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/lib/lowpass",
                     "/Users/tomixrm/.platformio/packages/framework-mbed/features/unsupported/dsp",
                     "/Users/tomixrm/Documents/Dev/Robots/BLDC/Programs/FOCF446RE/features/unsupported/dsp",
                     "/Users/tomixrm/.platformio/packages/framework-mbed/features/unsupported/dsp/cmsis_dsp",
