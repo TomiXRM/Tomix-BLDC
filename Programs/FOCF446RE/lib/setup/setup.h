@@ -14,6 +14,21 @@ FastPWM pwm[3] = {PC_7, PB_4, PB_10};
 AnalogIn AN[2] = {A0, A2};
 DigitalOut bEnable(D8);
 Timer timer;
+Ticker turnChangeT;
+
+int timeT, theta, diff;
+int shaftAngle;
+int elAngleZero, elAngle, elAnglePrev = 0;
+float volts_to_amps_ratio = 1.0f / 0.01 / 50; // volts to amps
+// gains for each phase
+float gain_a, gain_b;
+float offset_ia, offset_ib;
+PhaseCurrent_s current, currentPrev;
+DQCurrent_s dqCurrent;
+
+int turnAmout = 1;
+float power = 0.45;
+int16_t amout = 210;
 
 void writePWM(float pU, float pV, float pW) {
     pwm[0].write(pU);
@@ -68,4 +83,25 @@ void CurrentSense_init() {
     gain_b *= -1;
 }
 
+DQCurrent_s getFOCCurrents(const float &angle_el, PhaseCurrent_s &current,
+                           PhaseCurrent_s &currentPrev) {
+    // read current phase currents
+    current.a =
+        (3.3 * (AN[0].read() - offset_ia) * gain_a) * 0.6 + currentPrev.a * 0.4;
+    current.b =
+        (3.3 * (AN[1].read() - offset_ib) * gain_b) * 0.6 + currentPrev.b * 0.4;
+    currentPrev = current;
+    // calculate clarke transform
+    float i_alpha = current.a;
+    float i_beta = (current.a + 2 * current.b) / 1.73205;
+
+    // // calculate park transform
+    float ct = cos32_T(angle_el);
+    float st = cos32_T(angle_el);
+
+    DQCurrent_s return_current;
+    return_current.d = i_alpha * ct + i_beta * st;
+    return_current.q = i_beta * ct - i_alpha * st;
+    return return_current;
+}
 #endif
