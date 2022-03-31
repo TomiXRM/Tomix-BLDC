@@ -55,9 +55,18 @@ int main() {
             elAnglePrev = elAngle;
             diff = theta - elAngle;
             diff = (diff < 0) ? 360 + diff : diff;
-            writePWM(power * sin32_T(theta) + 0.5,
-                     power * sin32_T(theta + 120) + 0.5,
-                     power * sin32_T(theta + 240) + 0.5);
+            
+            float dutyU = power * sin32_T(theta) + 0.5;
+            float dutyV = power * sin32_T(theta + 120) + 0.5;
+            float dutyW = power * sin32_T(theta + 240) + 0.5;
+            float max_ = max(dutyU, max(dutyV, dutyW)); //最大値
+            float min_ = min(dutyU, min(dutyV, dutyW)); //最大値
+            float offset = (max_ + min_) / 2;           //変調波
+            //変調波を合成(元の振幅を維持)
+            dutyU = dutyU * 11547 / 10000 - offset;
+            dutyV = dutyV * 11547 / 10000 - offset;
+            dutyW = dutyW * 11547 / 10000 - offset;
+            writePWM(dutyU, dutyV, dutyW);
             // wait_ms(1);
         }
     }
