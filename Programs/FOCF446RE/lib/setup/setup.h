@@ -8,6 +8,12 @@
 
 #define POLEPAIR 8
 
+#define COS0 SIN90
+#define COS120 -SIN30
+#define COS240 COS120
+#define SIN120 SIN60
+#define SIN240 -SIN60
+
 As5048Spi sensor(D11, D12, D13, D10);
 RawSerial pc(USBTX, USBRX, 2000000); // tx, rx
 FastPWM pwm[3] = {PC_7, PB_4, PB_10};
@@ -18,7 +24,7 @@ Ticker turnChangeT;
 
 int timeT, theta, diff;
 int shaftAngle;
-int elAngleZero, elAngle, elAnglePrev = 0;
+int angleZero, elAngle, elAnglePrev = 0;
 float volts_to_amps_ratio = 1.0f / 0.01 / 50; // volts to amps
 // gains for each phase
 float gain_a, gain_b;
@@ -27,13 +33,15 @@ PhaseCurrent_s current, currentPrev;
 DQCurrent_s dqCurrent;
 
 int turnAmout = 1;
-float power = 0.45;
+float power = 0.5;
 int16_t amout = 210;
 
 void writePWM(float pU, float pV, float pW) {
     pwm[0].write(pU);
     pwm[1].write(pV);
     pwm[2].write(pW);
+    pc.printf("U:%d,V:%d,W:%d\r\n", (int)(pU * 1000), (int)(pV * 1000),
+              (int)(pW * 1000));
 }
 
 int16_t degBetween_signed(int16_t deg1, int16_t deg2) {
@@ -59,11 +67,11 @@ int16_t readAngle() {
 
 void setAngleZero() {
     pc.printf("setZero\r\n");
-    pwm[0].write(0.5);
+    pwm[0].write(0.3);
     wait_ms(500);
-    elAngleZero = readAngle();
+    angleZero = readAngle();
     pwm[0] = 0;
-    pc.printf("setZero:%d\r\n", elAngleZero);
+    pc.printf("setZero:%d\r\n", angleZero);
     wait_ms(500);
 }
 
